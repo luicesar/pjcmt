@@ -1,0 +1,89 @@
+<h2>Desaparecidos</h2>
+<hr>
+
+<form [formGroup]="form">
+<div class="container">
+  <div class="row height d-flex justify-content-center align-items-center">
+    <div class="col-md-8">
+      <div class="search">
+        <i class="fa fa-search"></i>
+        <input type="text" [ngClass]="cssValidator(f.pesquisa)" formControlName="pesquisa" class="form-control" placeholder="Digite o nome do desaparecido.">
+        <div *ngIf="f.pesquisa.errors?.required" class="invalid-feedback">
+          Campo é obrigatório.
+        </div>
+        <div *ngIf="f.pesquisa.errors?.minlength" class="invalid-feedback">
+          Tema deve ter no mínimo 4 caracteres.
+        </div>
+        <div *ngIf="f.pesquisa.errors?.maxlength" class="invalid-feedback">
+          Tema deve ter no máximo 50 caracteres.
+        </div>
+        <button class="btn btn-primary" [disabled]="!form.valid" (click)="getDesaparecidos(0)">Pesquisar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+<br />
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>
+        <button type="button" class="btn btn-outline-light btn-sm"
+        (click)="alterarImagem()">
+        <i class="{{!exibirImagem ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+          {{!exibirImagem ? 'exibir' : 'ocultar'}}
+        </button>
+      </th>
+      <th>Nome</th>
+      <th class="d-none d-md-table-cell">Idade</th>
+      <th class="d-none d-md-table-cell">Sexo</th>
+      <th class="d-none d-md-table-cell">Vivo</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="desaparecidos && desaparecidos.length">
+   <tr *ngFor="let desaparecido of desaparecidos" (click)="detalheDesaparecido(desaparecido.id)" style="cursor: pointer;">
+      <td>
+         <img
+            [collapse]="!exibirImagem" [isAnimated]="true"
+            src="{{desaparecido.urlFoto!=null ? desaparecido.urlFoto : '/assets/sem-foto.jpg'}}"
+            [style.width.px]="larguraImagem"
+            [style.margin.px]="margemImagem"
+        >
+      </td>
+      <td>{{desaparecido.nome}}</td>
+      <td class="d-none d-md-table-cell">{{desaparecido.idade}}</td>
+      <td class="d-none d-md-table-cell">{{desaparecido.sexo}}</td>
+      <td class="d-none d-md-table-cell">{{desaparecido.vivo ? 'SIM' : 'NÂO'}}</td>
+    </tr>
+  </tbody>
+  <tfoot *ngIf="!desaparecidos.length">
+    <tr>
+      <td colspan="8" class="text-center">
+        <h4>Nenhum desaparecido encontrado!</h4>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<div class="d-flex justify-content-center">
+
+  <pagination
+    [boundaryLinks]="true"
+
+    [maxSize]="10"
+    [totalItems]="pagination.totalItems"
+    [itemsPerPage]="pagination.itemsPerPage"
+    [(ngModel)]="pagination.currentPage"
+    (pageChanged)="pageChanged($event)"
+
+    pageBtnClass="btn"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+
+  </pagination>
+
+</div>
+
+

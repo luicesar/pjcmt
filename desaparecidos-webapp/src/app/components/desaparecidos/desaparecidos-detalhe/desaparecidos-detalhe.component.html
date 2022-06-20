@@ -1,0 +1,115 @@
+<h2>Detalhes</h2>
+<hr>
+<div class="container">
+  <section class="contact py-5 bg-light" id="contact">
+    <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+              <h4><b>{{desaparecido.nome}}</b></h4>
+            <hr>
+          </div>
+        <div class="col-md-8">
+            <div class="address">
+            <h5><b>Dados Pessoais:</b></h5>
+            <ul class="list-unstyled">
+                <li>{{desaparecido.idade + " anos"}}</li>
+                <li>{{"Sexo " + desaparecido.sexo}}</li>
+                <li>{{desaparecido.vivo ? "Encontra-se VIVO": "Encontra-se: MORTO"}}</li>
+            </ul>
+            <!-- <p>Please don't send anything to this address.</p> -->
+            </div>
+            <div class="email">
+            <h5><b>Última Ocorrencia (Desaparecimento):</b></h5>
+            <ul class="list-unstyled">
+                <li>{{"Data: "}} {{desaparecido?.ultimaOcorrencia?.dtDesaparecimento | DateTimeFormatPipe}}</li>
+                <li> {{"Local: " + desaparecido?.ultimaOcorrencia?.localDesaparecimentoConcat}}</li>
+            </ul>
+            </div>
+            <hr>
+            <div class="social">
+              <ul class="list-inline list-unstyled">
+                  <li class="list-inline-item">
+                      <a href="{{whatsUrl}}{{desaparecido?.ultimaOcorrencia?.ocorrenciaEntrevDesapDTO?.informacao}}" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a>
+                  </li>
+                  <li class="list-inline-item">
+                      <a href="{{faceUrl}}{{desaparecido?.urlFoto}}" target="_blank"><i class="fab fa-facebook fa-2x"></i></a>
+                  </li>
+              </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card" >
+                <div class="card-body">
+                     <form>
+                            <div class="form-row text-center">
+                                <div class="form-group col-md-12">
+                                  <img
+                                  src="{{desaparecido.urlFoto!=null ? desaparecido.urlFoto : '/assets/sem-foto.jpg'}}"
+                                  [style.width.px]="larguraImagem"
+                                  [style.margin.px]="margemImagem">
+                                </div>
+                            </div>
+                            <div class="form-row d-flex justify-content-center">
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-outline-primary btn-sm  mr-2" (click)="openModal(template)">Encontrei</button>
+                                  <button type="button" class="btn btn-outline-warning btn-sm" (click)="voltar()">Voltar</button>
+                              </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    </section>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">
+     <h4 class="modal-title pull-left"><b>Inclusão de Pessoas Desaparecidas</b></h4>
+     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">×</span>
+     </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="registerForm">
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label"><b>Data:</b></label>
+            <input type="date"
+                value="{{f.dataVisualizacao}}"
+                formControlName="dataVisualizacao"
+                [ngClass]="cssValidator(f.dataVisualizacao)"
+                placeholder="data"
+                class="form-control"
+                >
+                <div *ngIf="f.dataVisualizacao.errors?.required && f.dataVisualizacao.touched" class="invalid-feedback">
+                  Data e Hora é obrigatório.
+                </div>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label"><b>Descrição Anexo:</b></label>
+            <input type="text" class="form-control" formControlName="descricao" [ngClass]="cssValidator(f.descricao)">
+            <div *ngIf="f.descricao.errors?.required && f.descricao.touched" class="invalid-feedback">
+              Descrição do Anexo é obrigatório.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label"><b>Anexo:</b></label>
+            <input type="file" class="form-control" formControlName="arquivoAnexo" (change)="onFileSelect($event)">
+          </div>
+		      <div class="form-group">
+            <label for="message-text" class="col-form-label"><b>Informação:</b></label>
+            <textarea class="form-control" formControlName="informacao" [ngClass]="cssValidator(f.informacao)"></textarea>
+            <div *ngIf="f.informacao.errors?.required && f.informacao.touched" class="invalid-feedback">
+              Informação é obrigatório.
+            </div>
+          </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+     <button type="button" class="btn btn-primary" [disabled]="!registerForm.valid" (click)="salvar()">Salvar</button>
+     <button type="button" class="btn btn-default" (click)="modalRef.hide()">Fechar</button>
+  </div>
+</ng-template>
